@@ -221,6 +221,8 @@ def doorbell(target_object, args):
 
     lights = DoorBellLightsController(DARK_INDICATOR_PIN, LED_STRIP_OUTPUT_PIN, logger=logger)
 
+    lights.turn_off()
+
     logger.info("Starting main loop")
     while True:
         now = time.time()

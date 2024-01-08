@@ -77,13 +77,12 @@ class DoorBellLightsController:
 
     def turn_off(self):
         """
-        Turn off the lights if it's dark and log the event.
+        Turn off the lights.
         """
-        if self._is_dark():
-            self.pixels.fill((0, 0, 0))  # Set pixels to OFF color (black)
-            self.pixels.show()
-            if self.logger:
-                self.logger.info("Lights turned OFF")
+        self.pixels.fill((0, 0, 0))  # Set pixels to OFF color (black)
+        self.pixels.show()
+        if self.logger:
+            self.logger.info("Lights turned OFF")
 
 
 if __name__ == "__main__":
