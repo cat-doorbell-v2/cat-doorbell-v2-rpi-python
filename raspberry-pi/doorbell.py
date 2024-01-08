@@ -29,7 +29,7 @@ import numpy as np
 import requests
 from tflite_support.task import audio, core, processor, vision
 
-from lights import DoorBellLightsController
+from doorbell_lights_controller import DoorBellLightsController
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
