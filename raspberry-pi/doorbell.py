@@ -24,11 +24,11 @@ import time
 
 import board
 import cv2
+import my_secrets
 import numpy as np
 import requests
 from tflite_support.task import audio, core, processor, vision
 
-import my_secrets
 from lights import DoorBellLightsController
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -172,7 +172,7 @@ def look_for(target_object, model, timeout=45) -> bool:
             timestamp = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S-%f")[:-3]
             outfile = f"/tmp/{timestamp}.jpg"
             cv2.imwrite(outfile, image)
-            logger.info("Timeout period reached. Diagnostic image saved")
+            logger.info("Timeout period reached. Diagnostic image saved to: %s", outfile)
             break
 
     cap.release()
