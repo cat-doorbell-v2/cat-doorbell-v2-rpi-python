@@ -43,6 +43,8 @@ class DoorBellLightsController:
         turn_on(): Turn on the lights if it's dark and log the event.
         turn_off(): Turn off the lights if it's dark and log the event.
     """
+    LIGHTS_ON = (255, 255, 255)  # White
+    LIGHTS_OFF = (0, 0, 0)  # Black
 
     def __init__(self, dark_indicator_pin, led_strip_pin, logger=None, max_pixels=4):
         self.dark_indicator_pin = dark_indicator_pin
@@ -70,7 +72,7 @@ class DoorBellLightsController:
         Turn on the lights if it's dark and log the event.
         """
         if self._is_dark():
-            self.pixels.fill((255, 255, 255))  # Set pixels to ON color (white)
+            self.pixels.fill(DoorBellLightsController.LIGHTS_ON)  # Set pixels to ON color (white
             self.pixels.show()
             if self.logger:
                 self.logger.info("Lights turned ON")
@@ -79,7 +81,7 @@ class DoorBellLightsController:
         """
         Turn off the lights.
         """
-        self.pixels.fill((0, 0, 0))  # Set pixels to OFF color (black)
+        self.pixels.fill(DoorBellLightsController.LIGHTS_OFF)  # Set pixels to OFF color (black)
         self.pixels.show()
         if self.logger:
             self.logger.info("Lights turned OFF")
