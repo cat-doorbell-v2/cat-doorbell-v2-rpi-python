@@ -61,7 +61,9 @@ class DoorBellLightsController:
         GPIO.setup(self.dark_indicator_pin, GPIO.IN)
 
     def _is_dark(self):
-        return GPIO.input(self.dark_indicator_pin)
+        dark = bool(GPIO.input(self.dark_indicator_pin))
+        print(f"dark: {dark}")
+        return dark
 
     def turn_on(self):
         if self._is_dark():
