@@ -1,1 +1,1 @@
-my_secrets.py filter=git-crypt diff=git-crypt
+raspberry-pi/my_secrets.py filter=git-crypt diff=git-crypt
