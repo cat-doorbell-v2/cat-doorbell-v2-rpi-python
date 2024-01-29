@@ -61,7 +61,9 @@ class DoorBellLightsController:
         GPIO.setup(self.dark_indicator_pin, GPIO.IN)
 
     def _is_dark(self):
-        return GPIO.input(self.dark_indicator_pin)
+        dark = bool(GPIO.input(self.dark_indicator_pin))
+        # print(f"dark: {dark}")
+        return dark
 
     def turn_on(self):
         if self._is_dark():
@@ -78,7 +80,7 @@ class DoorBellLightsController:
 
 if __name__ == "__main__":
     # Example usage with logger
-    dark_pin = 2  # Physical pin 3
+    dark_pin = 17  # Physical pin 11
     ci_pin = board.D11  # Clock Interface pin
     di_pin = board.D10  # Data Interface pin
 
@@ -95,3 +97,4 @@ if __name__ == "__main__":
         controller.turn_on()  # Turn on the lights if it's dark and log the event
         time.sleep(30)  # Wait for 30 seconds
         controller.turn_off()  # Turn off the lights
+        time.sleep(30)  # Wait for 30 seconds

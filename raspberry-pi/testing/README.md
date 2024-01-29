@@ -1,0 +1,1 @@
+To test `doorbell_lights_controller.py`, just run it directly with python from the command line and `main` will execute.
