@@ -35,6 +35,9 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # What GPIO pin is associated with a condition?
 DARK_INDICATOR_PIN = 17  # Physical pin 11
+CLOCK_PIN = board.SCK  # Physical pin 23
+DATA_PIN = board.MOSI  # Physical pin 19
+
 
 # Use the board internal definition for this
 LED_STRIP_OUTPUT_PIN = board.D10  # Physical pin 19
@@ -219,7 +222,7 @@ def doorbell(target_object, args):
 
     audio_record.start_recording()
 
-    lights = DoorBellLightsController(DARK_INDICATOR_PIN, LED_STRIP_OUTPUT_PIN, logger=logger)
+    lights = DoorBellLightsController(DARK_INDICATOR_PIN, CLOCK_PIN, DATA_PIN, logger=logger)
 
     lights.turn_off()
 
