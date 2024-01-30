@@ -37,6 +37,7 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 DARK_INDICATOR_PIN = 17  # Physical pin 11
 CLOCK_PIN = board.SCK  # Physical pin 23
 DATA_PIN = board.MOSI  # Physical pin 19
+DEBUG = True
 
 REQUEST_HEADER = {'content-type': 'application/json'}
 
@@ -218,7 +219,7 @@ def doorbell(target_object, args):
 
     audio_record.start_recording()
 
-    lights = DoorBellLightsController(DARK_INDICATOR_PIN, CLOCK_PIN, DATA_PIN, logger=logger)
+    lights = DoorBellLightsController(DARK_INDICATOR_PIN, CLOCK_PIN, DATA_PIN, logger=logger, debug=DEBUG)
 
     lights.turn_off()
 
