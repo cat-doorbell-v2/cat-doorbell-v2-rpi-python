@@ -38,10 +38,6 @@ DARK_INDICATOR_PIN = 17  # Physical pin 11
 CLOCK_PIN = board.SCK  # Physical pin 23
 DATA_PIN = board.MOSI  # Physical pin 19
 
-
-# Use the board internal definition for this
-LED_STRIP_OUTPUT_PIN = board.D10  # Physical pin 19
-
 REQUEST_HEADER = {'content-type': 'application/json'}
 
 logger = logging.getLogger(__name__)
