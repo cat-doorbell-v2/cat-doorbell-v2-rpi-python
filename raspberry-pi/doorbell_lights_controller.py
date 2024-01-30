@@ -46,12 +46,13 @@ class DoorBellLightsController:
     LIGHTS_ON = (255, 255, 255)  # White
     LIGHTS_OFF = (0, 0, 0)  # Black
 
-    def __init__(self, dark_indicator_pin, ci_pin, di_pin, logger=None, max_pixels=20):
+    def __init__(self, dark_indicator_pin, ci_pin, di_pin, logger=None, max_pixels=20, debug=False):
         self.dark_indicator_pin = dark_indicator_pin
         self.ci_pin = ci_pin
         self.di_pin = di_pin
         self.max_pixels = max_pixels
         self.logger = logger
+        self.debug = debug
 
         # Initialize APA102 LED strip
         self.pixels = adafruit_dotstar.DotStar(self.ci_pin, self.di_pin, self.max_pixels, brightness=0.5,
@@ -61,37 +62,53 @@ class DoorBellLightsController:
         GPIO.setup(self.dark_indicator_pin, GPIO.IN)
 
     def _is_dark(self):
+        """
+        Check if it's dark based on the dark indicator sensor.
+        Returns:
+            bool: True if it's dark, False otherwise.
+        """
         dark = bool(GPIO.input(self.dark_indicator_pin))
-        # print(f"dark: {dark}")
+        self.logger.info(f"dark: {dark}")
         return dark
 
     def turn_on(self):
-        if self._is_dark():
+        """
+        Turn on the lights if it's dark and log the event.
+        Returns:
+            None
+        """
+        if self._is_dark() or self.debug:
             self.pixels.fill(DoorBellLightsController.LIGHTS_ON)
             self.pixels.show()
             if self.logger:
-                self.logger.info("Lights turned ON")
+                self.logger.info("Turn lights ON")
 
     def turn_off(self):
+        """
+        Turn off the lights.
+        Returns:
+            None
+        """
         self.pixels.fill(DoorBellLightsController.LIGHTS_OFF)
         self.pixels.show()
         if self.logger:
-            self.logger.info("Lights turned OFF")
+            self.logger.info("Turn lights OFF")
+
 
 if __name__ == "__main__":
     # Example usage with logger
     dark_pin = 17  # Physical pin 11
-    ci_pin = board.D11  # Clock Interface pin
-    di_pin = board.D10  # Data Interface pin
+    clock_pin = board.D11  # Clock Interface pin
+    data_pin = board.D10  # Data Interface pin
 
     # Create a logger
-    logger = logging.getLogger(__name__)
-    logger.setLevel(logging.INFO)
+    log = logging.getLogger(__name__)
+    log.setLevel(logging.INFO)
 
     handler = logging.StreamHandler(stream=sys.stdout)
-    logger.addHandler(handler)
+    log.addHandler(handler)
 
-    controller = DoorBellLightsController(dark_pin, ci_pin, di_pin, logger=logger)
+    controller = DoorBellLightsController(dark_pin, clock_pin, data_pin, logger=log)
 
     while True:
         controller.turn_on()  # Turn on the lights if it's dark and log the event
