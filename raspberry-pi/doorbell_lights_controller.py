@@ -78,6 +78,8 @@ class DoorBellLightsController:
             None
         """
         if self._is_dark() or self.debug:
+            if self.debug:
+                self.logger.info("Debug enabled")
             self.pixels.fill(DoorBellLightsController.LIGHTS_ON)
             self.pixels.show()
             if self.logger:
