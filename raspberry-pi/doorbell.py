@@ -37,7 +37,8 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 DARK_INDICATOR_PIN = 17  # Physical pin 11
 CLOCK_PIN = board.SCK  # Physical pin 23
 DATA_PIN = board.MOSI  # Physical pin 19
-DEBUG = True
+
+DEBUG = False
 
 REQUEST_HEADER = {'content-type': 'application/json'}
 
