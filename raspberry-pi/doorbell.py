@@ -21,7 +21,6 @@ import os
 import socket
 import sys
 import time
-import wave
 
 import board
 import cv2
@@ -183,22 +182,6 @@ def look_for(target_object, model, timeout=45) -> bool:
     return found
 
 
-def save_audio(audio_record, audio_data, filename):
-    """
-    Save audio data to a file
-
-    Args:
-        audio_record: The audio record object
-        audio_data: The audio data buffer
-        filename: The filename to save the audio
-    """
-    with wave.open(filename, 'wb') as wf:
-        wf.setnchannels(1)  # Mono
-        wf.setsampwidth(audio_record.format.bytes_per_sample)
-        wf.setframerate(audio_record.format.sample_rate)
-        wf.writeframes(audio_data)
-
-
 def doorbell(target_object, args):
     """
     Listen for a target object and then look for it
@@ -262,10 +245,6 @@ def doorbell(target_object, args):
 
         if noise == target_object:
             logger.info("Heard %s", noise)
-
-            # Save the audio data
-            timestamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-            save_audio(audio_record, tensor_audio.buffer, f'cat_meowing_{timestamp}.wav')
 
             # If it is dark, turn LEDs on so the camera can 'see' the cat
             lights.turn_on()
