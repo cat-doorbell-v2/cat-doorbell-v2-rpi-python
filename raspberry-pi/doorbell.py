@@ -166,13 +166,14 @@ def look_for(target_object, model, timeout=45) -> bool:
             logger.info(f"Category {category} == Target {target_object}.")
             found = True
             break
+        else:
+            timestamp = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S-%f")[:-3]
+            outfile = f"/tmp/{timestamp}.jpg"
+            cv2.imwrite(outfile, image)
 
         time_hack = int(time.time() - timeout_start)
 
         if time_hack > timeout:
-            timestamp = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S-%f")[:-3]
-            outfile = f"/tmp/{timestamp}.jpg"
-            cv2.imwrite(outfile, image)
             logger.info("Timeout period reached. Diagnostic image saved to: %s", outfile)
             break
 
