@@ -214,6 +214,8 @@ def doorbell(target_object, args):
     audio_record = classifier.create_audio_record()
     tensor_audio = classifier.create_input_tensor_audio()
 
+    print(f"sampling_rate: {audio_record.sampling_rate} buffer_size: {audio_record.buffer_size}")
+
     input_length_in_second = float(len(tensor_audio.buffer)) / tensor_audio.format.sample_rate
     interval_between_inference = input_length_in_second * (1 - overlapping_factor)
     pause_time = interval_between_inference * 0.1
