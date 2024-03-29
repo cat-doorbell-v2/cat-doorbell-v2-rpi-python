@@ -25,7 +25,9 @@ import time
 import board
 import cv2
 import numpy as np
+import pytz
 import requests
+import soundfile as sf
 from tflite_support.task import audio, core, processor, vision
 
 import my_secrets
@@ -47,6 +49,17 @@ logger.setLevel(logging.INFO)
 
 handler = logging.StreamHandler(stream=sys.stdout)
 logger.addHandler(handler)
+
+
+def get_timestamp():
+    # Define the US Central timezone
+    central_tz = pytz.timezone('US/Central')
+
+    # Get the current time in US Central timezone
+    current_time_central = datetime.now(central_tz)
+
+    # Format the string as year-month-day-hour-minute-seconds
+    return current_time_central.strftime('%Y-%m-%d-%H-%M-%S')
 
 
 def get_category_name(detection_result: processor.DetectionResult) -> str:
@@ -214,7 +227,7 @@ def doorbell(target_object, args):
     audio_record = classifier.create_audio_record()
     tensor_audio = classifier.create_input_tensor_audio()
 
-    print(f"sampling_rate: {audio_record.sampling_rate} buffer_size: {audio_record.buffer_size}")
+    print(f"sampling_rate: {audio_record.sampling_rate} buffer_size: {audio_record.buffer_size} samples")
 
     input_length_in_second = float(len(tensor_audio.buffer)) / tensor_audio.format.sample_rate
     interval_between_inference = input_length_in_second * (1 - overlapping_factor)
@@ -248,6 +261,9 @@ def doorbell(target_object, args):
 
         if noise == target_object:
             logger.info("Heard %s", noise)
+            audio_record.stop()
+            t_stamp = get_timestamp()
+            sf.write(file=f"/tmp/{t_stamp}.wav", data=audio_record.read(15600), samplerate=16000)
 
             # If it is dark, turn LEDs on so the camera can 'see' the cat
             lights.turn_on()
@@ -263,6 +279,8 @@ def doorbell(target_object, args):
             else:
                 logger.info("Could not see cat.")
 
+            audio_record.start_recording()
+            logger.info("Restarting recording")
             lights.turn_off()
 
 
