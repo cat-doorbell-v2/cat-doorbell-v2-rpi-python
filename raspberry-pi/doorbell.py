@@ -180,7 +180,7 @@ def look_for(target_object, model, timeout=45) -> bool:
             found = True
             break
         else:
-            timestamp = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S-%f")[:-3]
+            timestamp = get_timestamp()
             outfile = f"/tmp/{timestamp}.jpg"
             cv2.imwrite(outfile, image)
 
