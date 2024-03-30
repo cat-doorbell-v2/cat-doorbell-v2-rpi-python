@@ -15,12 +15,12 @@ sound, and the other by sight.  Here is the example code for the 2 apps:
 
 """
 import argparse
-import datetime
 import logging
 import os
 import socket
 import sys
 import time
+from datetime import datetime
 
 import board
 import cv2
