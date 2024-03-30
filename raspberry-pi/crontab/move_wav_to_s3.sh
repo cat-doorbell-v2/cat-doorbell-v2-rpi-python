@@ -1,4 +1,7 @@
 #!/bin/bash
+#
+# Save captured wav files to s3 to feed the v3 samples input
+#
 
 # Target S3 bucket name
 BUCKET_NAME="cat-doorbell-v3-samples"
