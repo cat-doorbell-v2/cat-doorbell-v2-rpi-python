@@ -233,6 +233,7 @@ def doorbell(target_object, args):
     interval_between_inference = input_length_in_second * (1 - overlapping_factor)
     pause_time = interval_between_inference * 0.1
     last_inference_time = time.time()
+    last_capture_time = time.time() - 3600
 
     audio_record.start_recording()
 
@@ -249,6 +250,16 @@ def doorbell(target_object, args):
             continue
         last_inference_time = now
 
+        # Hourly capture if no cat meow detected
+        if (now - last_capture_time) >= 3600:
+            audio_record.stop()
+            t_stamp = get_timestamp()
+            sf.write(file=f"/tmp/unknown-{t_stamp}.wav", data=audio_record.read(15600), samplerate=16000)
+            audio_record.start_recording()
+            last_capture_time = now
+            logger.info("Hourly audio unknown capture completed, continuing...")
+            continue
+
         # Load the input audio and run classify.
         tensor_audio.load_from_audio_record(audio_record)
         result = classifier.classify(tensor_audio)
@@ -263,7 +274,7 @@ def doorbell(target_object, args):
             logger.info("Heard %s", noise)
             audio_record.stop()
             t_stamp = get_timestamp()
-            sf.write(file=f"/tmp/{t_stamp}.wav", data=audio_record.read(15600), samplerate=16000)
+            sf.write(file=f"/tmp/meow-{t_stamp}.wav", data=audio_record.read(15600), samplerate=16000)
 
             # If it is dark, turn LEDs on so the camera can 'see' the cat
             lights.turn_on()
