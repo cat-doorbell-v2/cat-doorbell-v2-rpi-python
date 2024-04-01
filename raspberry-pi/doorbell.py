@@ -227,7 +227,7 @@ def doorbell(target_object, args):
     audio_record = classifier.create_audio_record()
     tensor_audio = classifier.create_input_tensor_audio()
 
-    print(f"sampling_rate: {audio_record.sampling_rate} buffer_size: {audio_record.buffer_size} samples")
+    print(f"sampling_rate: {audio_record.sampling_rate} buffer_size: {audio_record.buffer_size} bytes")
 
     input_length_in_second = float(len(tensor_audio.buffer)) / tensor_audio.format.sample_rate
     interval_between_inference = input_length_in_second * (1 - overlapping_factor)
@@ -249,16 +249,6 @@ def doorbell(target_object, args):
             time.sleep(pause_time)
             continue
         last_inference_time = now
-
-        # Hourly capture if no cat meow detected
-        if (now - last_capture_time) >= 3600:
-            audio_record.stop()
-            t_stamp = get_timestamp()
-            sf.write(file=f"/tmp/unknown-{t_stamp}.wav", data=audio_record.read(15600), samplerate=16000)
-            audio_record.start_recording()
-            last_capture_time = now
-            logger.info("Hourly audio unknown capture completed, continuing...")
-            continue
 
         # Load the input audio and run classify.
         tensor_audio.load_from_audio_record(audio_record)
@@ -293,6 +283,14 @@ def doorbell(target_object, args):
             audio_record.start_recording()
             logger.info("Restarting recording")
             lights.turn_off()
+        elif (now - last_capture_time) >= 3600:
+            audio_record.stop()
+            t_stamp = get_timestamp()
+            sf.write(file=f"/tmp/unknown-{t_stamp}.wav", data=audio_record.read(15600), samplerate=16000)
+            audio_record.start_recording()
+            last_capture_time = now
+            logger.info("Hourly audio unknown capture completed, continuing...")
+
 
 
 def main():
