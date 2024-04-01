@@ -284,12 +284,12 @@ def doorbell(target_object, args):
             logger.info("Restarting recording")
             lights.turn_off()
         elif (now - last_capture_time) >= 3600:
+            logger.info("Hourly audio 'unknown' capture")
             audio_record.stop()
             t_stamp = get_timestamp()
             sf.write(file=f"/tmp/unknown-{t_stamp}.wav", data=audio_record.read(15600), samplerate=16000)
             audio_record.start_recording()
             last_capture_time = now
-            logger.info("Hourly audio unknown capture completed, continuing...")
 
 
 
