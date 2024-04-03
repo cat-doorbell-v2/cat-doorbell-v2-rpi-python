@@ -168,7 +168,7 @@ def look_for(target_object, model, timeout=45) -> bool:
             break
         else:
             timestamp = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S-%f")[:-3]
-            outfile = f"/tmp/{timestamp}.jpg"
+            outfile = f"/tmp/{category}-{timestamp}.jpg"
             cv2.imwrite(outfile, image)
 
         time_hack = int(time.time() - timeout_start)
