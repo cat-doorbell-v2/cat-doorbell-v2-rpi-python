@@ -1,5 +1,3 @@
-# Move captured "meow" recordings to s3 hourly
-57 * * * * $(which zsh) ~tennis/cat-doorbell-v2-rpi-python/raspberry-pi/crontab/move_wav_to_s3.sh >> /tmp/s3_wav_move.log 2>&1 &
-#
-# Move captured cat jpg images to s3 hourly
-13 * * * * $(which zsh) ~tennis/cat-doorbell-v2-rpi-python/raspberry-pi/crontab/move_jpg_to_s3.sh >> /tmp/s3_jpg_move.log 2>&1 &
+
+# Move captured cat wav/jpg images to google drive hourly
+13 * * * * $(which zsh) ~tennis/cat-doorbell-v2-rpi-python/raspberry-pi/crontab/rclone-to-google-drive.sh >> /tmp/rclone-to-google.log 2>&1 &
