@@ -1,1 +1,2 @@
 raspberry-pi/my_secrets.py filter=git-crypt diff=git-crypt
+raspgerry-pi/crontab/google/mycreds.txt filter=git-crypt diff=git-crypt

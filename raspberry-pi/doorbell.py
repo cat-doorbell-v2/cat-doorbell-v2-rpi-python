@@ -15,17 +15,19 @@ sound, and the other by sight.  Here is the example code for the 2 apps:
 
 """
 import argparse
-import datetime
 import logging
 import os
 import socket
 import sys
 import time
+from datetime import datetime
 
 import board
 import cv2
 import numpy as np
+import pytz
 import requests
+import soundfile as sf
 from tflite_support.task import audio, core, processor, vision
 
 import my_secrets
@@ -47,6 +49,17 @@ logger.setLevel(logging.INFO)
 
 handler = logging.StreamHandler(stream=sys.stdout)
 logger.addHandler(handler)
+
+
+def get_timestamp():
+    # Define the US Central timezone
+    central_tz = pytz.timezone('US/Central')
+
+    # Get the current time in US Central timezone
+    current_time_central = datetime.now(central_tz)
+
+    # Format the string as year-month-day-hour-minute-seconds
+    return current_time_central.strftime('%Y-%m-%d-%H-%M-%S')
 
 
 def get_category_name(detection_result: processor.DetectionResult) -> str:
@@ -167,8 +180,8 @@ def look_for(target_object, model, timeout=45) -> bool:
             found = True
             break
         else:
-            timestamp = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S-%f")[:-3]
-            outfile = f"/tmp/{category}-{timestamp}.jpg"
+            timestamp = get_timestamp()
+            outfile = f"/tmp/{timestamp}.jpg"
             cv2.imwrite(outfile, image)
 
         time_hack = int(time.time() - timeout_start)
@@ -214,10 +227,13 @@ def doorbell(target_object, args):
     audio_record = classifier.create_audio_record()
     tensor_audio = classifier.create_input_tensor_audio()
 
+    print(f"sampling_rate: {audio_record.sampling_rate} buffer_size: {audio_record.buffer_size} bytes")
+
     input_length_in_second = float(len(tensor_audio.buffer)) / tensor_audio.format.sample_rate
     interval_between_inference = input_length_in_second * (1 - overlapping_factor)
     pause_time = interval_between_inference * 0.1
     last_inference_time = time.time()
+    last_capture_time = time.time() - 3600
 
     audio_record.start_recording()
 
@@ -246,6 +262,9 @@ def doorbell(target_object, args):
 
         if noise == target_object:
             logger.info("Heard %s", noise)
+            # audio_record.stop()
+            t_stamp = get_timestamp()
+            sf.write(file=f"/tmp/meow-{t_stamp}.wav", data=audio_record.read(15600), samplerate=16000)
 
             # If it is dark, turn LEDs on so the camera can 'see' the cat
             lights.turn_on()
@@ -261,7 +280,17 @@ def doorbell(target_object, args):
             else:
                 logger.info("Could not see cat.")
 
+            # audio_record.start_recording()
+            logger.info("Restarting recording")
             lights.turn_off()
+        elif (now - last_capture_time) >= 3600:
+            logger.info("Hourly audio 'unknown' capture")
+            # audio_record.stop()
+            t_stamp = get_timestamp()
+            sf.write(file=f"/tmp/unknown-{t_stamp}.wav", data=audio_record.read(15600), samplerate=16000)
+            # audio_record.start_recording()
+            last_capture_time = now
+
 
 
 def main():

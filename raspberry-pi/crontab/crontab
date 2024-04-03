@@ -1,0 +1,3 @@
+
+# Move captured cat wav/jpg images to google drive hourly
+13 * * * * $(which zsh) ~tennis/cat-doorbell-v2-rpi-python/raspberry-pi/crontab/rclone-to-google-drive.sh >> /tmp/rclone-to-google.log 2>&1 &
