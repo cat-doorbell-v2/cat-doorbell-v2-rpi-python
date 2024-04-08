@@ -116,12 +116,12 @@ def visualize(image: np.ndarray, detection_result: processor.DetectionResult) ->
     return image
 
 
-def look_for(target_object, model, timeout=45) -> bool:
+def look_for(target_objects, model, timeout=45) -> bool:
     """
     Look for a target object
 
     Args:
-        target_object (): The thing we want to see and identify
+        target_objects (): The things we want to see and identify
         model (): The model to use for identification
         timeout (): The amount of time before we give up
 
@@ -166,7 +166,7 @@ def look_for(target_object, model, timeout=45) -> bool:
         # Run object detection estimation using the model.
         detection_result = detector.detect(input_tensor)
 
-        # Draw keypoints and edges on input image
+        # Draw key points and edges on input image
         image = visualize(image, detection_result)
 
         cv2.imshow('object_detector', image)
@@ -175,13 +175,13 @@ def look_for(target_object, model, timeout=45) -> bool:
 
         logger.info(f'Detected category: {category}')
 
-        if category == target_object:
-            logger.info(f"Category {category} == Target {target_object}.")
+        if category in target_objects:
+            logger.info(f"Category {category} in Targets {target_objects}.")
             found = True
             break
         else:
             timestamp = get_timestamp()
-            outfile = f"/tmp/{category}-{timestamp}.jpg"
+            outfile = f"/tmp/{timestamp}.jpg"
             cv2.imwrite(outfile, image)
 
         time_hack = int(time.time() - timeout_start)
@@ -270,7 +270,7 @@ def doorbell(target_object, args):
             lights.turn_on()
             #
             # Now that we heard the cat, can we see him?
-            if look_for('cat', video_model):
+            if look_for(['cat', 'person'], video_model):
                 logger.info("Cat heard and seen. Trigger text msg")
                 requests.post(my_secrets.REST_API_URL, headers=REQUEST_HEADER)
 
